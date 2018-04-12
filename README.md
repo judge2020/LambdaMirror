@@ -25,3 +25,9 @@ Use aws lambda to mirror a git repo.
 |GH_TOKEN|github token, required to push (SSH keys not supported)|abc1243...|
 |SOURCE_REPO|the origin (source) github repo|judge2020/lambdaMirror|
 |TARGET_REPO|the target github repo|judge2020/MirrorOfLambdaMirror|
+
+9. Under that, go to "basic settings" and configure memory to what you expect is the minimum. Large repositories will require more memory and often much longer execution time. A basic execution costs about 
+
+Stats:
+
+This repo, mirrored to [MirrorOfLambdaMirror](https://github.com/judge2020/MirrorOfLambdaMirror) costs 100 MB and took 25 seconds to execute. Keep this in mind for larer repositories, and adjust your cron/rate accordingly.
