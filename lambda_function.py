@@ -1,5 +1,5 @@
 import os
-import sys, urllib.request, tarfile, subprocess
+import sys, urllib.request, tarfile, random
 
 #NOTE: SSH is not supported at this time, I don't want to go down that can of worms
 # repo format: myOrgOrUser/repo
@@ -14,11 +14,10 @@ target = "https://" + token + "@github.com/" + target
 
 
 def setupgit():
-    os.chdir('/tmp')
-    urllib.request.urlretrieve('https://raw.githubusercontent.com/judge2020/LambdaMirror/master/git-2.4.3.tar', 'git.tar')
     tar = tarfile.open("git.tar")
-    tar.extractall()
+    tar.extractall(path="/tmp")
     tar.close()
+    os.chdir('/tmp')
     GIT_TEMPLATE = os.path.join(os.getcwd(), 'usr/share/git-core/templates')
     GIT_EXEC = os.path.join(os.getcwd(), 'usr/libexec/git-core')
     GIT_LIB = os.path.join(os.getcwd(), 'usr/lib64')
@@ -29,12 +28,19 @@ def setupgit():
 
 
 def lambda_handler(event, context):
-    setupgit()
-    sys.path.append('/tmp/usr/bin')
+    folder = "mirror"
+    if not os.path.exists('/tmp/usr/bin/git'):
+        os.chdir('/var/task')
+        setupgit()
     os.chdir('/tmp/usr/bin')
-    os.mkdir('mirror')
-    a = os.system('./git clone --mirror ' + source + " mirror")
-    os.chdir('mirror')
+    if os.path.exists(folder):
+        os.chdir(folder)
+        a = os.system('./../git fetch -p origin')
+        b = os.system('./../git push --mirror')
+        return "Cached run: " + str(b) + "|" + str(b)
+    os.mkdir(folder)
+    a = os.system('./git clone --mirror ' + source + " " + folder)
+    os.chdir(folder)
     b = os.system('./../git remote set-url --push origin ' + target)
     c = os.system('./../git push --mirror')
-    return str(a) + "|" + str(b) + "|" + str(c)
+    return "Non-Cached run: " + str(a) + "|" + str(b) + "|" + str(c)
