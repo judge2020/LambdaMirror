@@ -1,0 +1,18 @@
+service: LambdaMirror
+plugins:
+  - serverless-pseudo-parameters
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: python3.6
+  memorySize: 256
+  timeout: 300
+
+functions:
+  hello:
+    handler: handler.hello
+    layers:
+      - arn:aws:lambda:#{AWS::Region}:553035198032:layer:git:3
+    events:
+      - schedule: rate(3 hours)

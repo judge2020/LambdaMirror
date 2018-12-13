@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "serverless-dotenv-plugin": "^2.0.1",
+    "serverless-pseudo-parameters": "^2.4.0"
+  }
+}
